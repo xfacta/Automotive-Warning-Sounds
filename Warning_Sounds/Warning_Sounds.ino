@@ -7,7 +7,7 @@
 
 
 
-#define Version "Warning Sounds V1"
+#define Version "Warning Sounds V2"
 
 
 
@@ -24,14 +24,14 @@
 // Pin definitions for inputs
 // general warning pins could all be combined into one via a diode
 // leaving only the Oil Pressure warning as special
-const int Other_Warning_Pin = 9;               // Input from Speedometer or RPM meter
-const int General_Warning_Pin = 10;            // Input from Fuel/Temp/Volts
-const int Oil_Pressure_Warning_Pin = 11;       // Input specifically for Oil Pressure
+#define Other_Warning_Pin 9          // Input from Speedometer or RPM meter
+#define General_Warning_Pin 10       // Input from Fuel/Temp/Volts
+#define Oil_Pressure_Warning_Pin 11  // Input specifically for Oil Pressure
 
 
 // Pin definitions for outputs
-const int Buzz_Pin = 18;                      // Speaker for warning sounds analog pin A0
-//const int LED_BUILTIN = LED_BUILTIN;        // Builtin LED indicator
+// LED_BUILTIN is predefined
+#define Buzz_Pin 18                         // Speaker for warning sounds analog pin A0
 
 
 // Buzzer variables
@@ -80,7 +80,6 @@ void setup() {
   delay(200);
   digitalWrite(LED_BUILTIN, LOW);
   Last_blink_Time = millis();
-
 }
 
 
@@ -90,15 +89,13 @@ void setup() {
 void loop() {
 
 
-  if ((digitalRead(Oil_Pressure_Warning_Pin) == LOW) && ((millis() - Oil_Sound_Time) > (Warn_Interval / 3)))
-  {
+  if ((digitalRead(Oil_Pressure_Warning_Pin) == LOW) && ((millis() - Oil_Sound_Time) > (Warn_Interval / 3))) {
     digitalWrite(LED_BUILTIN, HIGH);
     Oil_Sound_Time = millis();
     for (Buzz_Count = 0; Buzz_Count < Buzz_Loop; Buzz_Count++)
-      // loop the required number of buzzer sounds
+    // loop the required number of buzzer sounds
     {
-      for (Buzz_Hz = 200; Buzz_Hz < 700; Buzz_Hz += Buzz_Step)
-      {
+      for (Buzz_Hz = 200; Buzz_Hz < 700; Buzz_Hz += Buzz_Step) {
         tone(Buzz_Pin, Buzz_Hz, Buzz_Step);
         // allows some time for each frequency to play
         delay(Buzz_Step - (Buzz_Step / 10));
@@ -111,23 +108,27 @@ void loop() {
     Last_blink_Time = millis();
   }
 
-  else if ((digitalRead(Other_Warning_Pin) == LOW) && ((millis() - Warn_Time) > Warn_Interval))
-  {
+  else if ((digitalRead(Other_Warning_Pin) == LOW) && ((millis() - Warn_Time) > Warn_Interval)) {
     digitalWrite(LED_BUILTIN, HIGH);
     Warn_Time = millis();
     // Rising sound
-    tone(Buzz_Pin, 200, 200); delay(190); tone(Buzz_Pin, 600, 200); delay(210);
+    tone(Buzz_Pin, 200, 200);
+    delay(190);
+    tone(Buzz_Pin, 600, 200);
+    delay(210);
     noTone(Buzz_Pin);
     digitalWrite(LED_BUILTIN, LOW);
     Last_blink_Time = millis();
   }
 
-  else if ((digitalRead(General_Warning_Pin) == LOW) && ((millis() - Warn_Time) > Warn_Interval))
-  {
+  else if ((digitalRead(General_Warning_Pin) == LOW) && ((millis() - Warn_Time) > Warn_Interval)) {
     digitalWrite(LED_BUILTIN, HIGH);
     Warn_Time = millis();
     // Falling sound
-    tone(Buzz_Pin, 600, 200); delay(190); tone(Buzz_Pin, 200, 200); delay(210);
+    tone(Buzz_Pin, 600, 200);
+    delay(190);
+    tone(Buzz_Pin, 200, 200);
+    delay(210);
     noTone(Buzz_Pin);
     digitalWrite(LED_BUILTIN, LOW);
     Last_blink_Time = millis();
@@ -135,8 +136,7 @@ void loop() {
 
   // Blink every 10 seconds as proof of life
 
-  if (millis() > (Last_blink_Time + 10000))
-  {
+  if (millis() > (Last_blink_Time + 10000)) {
     digitalWrite(LED_BUILTIN, HIGH);
     delay(100);
     digitalWrite(LED_BUILTIN, LOW);
@@ -144,7 +144,7 @@ void loop() {
   }
 
 
-} // end void loop
+}  // end void loop
 
 
 
